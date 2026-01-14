@@ -1,0 +1,45 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Domain/Entity/'
+            - '../src/Domain/ValueObject/'
+            - '../src/Kernel.php'
+
+    # Domain Layer - Repositories (Interfaces)
+    App\Domain\Repository\BookRepositoryInterface:
+        alias: App\Infrastructure\Repository\GutendexBookRepository
+
+    # Infrastructure Layer - HTTP Client
+    App\Infrastructure\Client\GutendexClient:
+        arguments:
+            $httpClient: '@http_client'
+            $baseUrl: '%env(GUTENDEX_API_URL)%'
+            $cache: '@cache.app'
+            $cacheTtl: '%env(int:CACHE_DEFAULT_TTL)%'
+
+    # Application Layer - Use Cases
+    App\Application\UseCase\SearchBooksUseCase:
+        arguments:
+            $bookRepository: '@App\Domain\Repository\BookRepositoryInterface'
+
+    App\Application\UseCase\GetBookByIdUseCase:
+        arguments:
+            $bookRepository: '@App\Domain\Repository\BookRepositoryInterface'
+
+    # Controllers
+    App\UI\Controller\BookController:
+        tags: ['controller.service_arguments']
+        arguments:
+            $searchBooksUseCase: '@App\Application\UseCase\SearchBooksUseCase'
+            $getBookByIdUseCase: '@App\Application\UseCase\GetBookByIdUseCase'
+
+when@test:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true

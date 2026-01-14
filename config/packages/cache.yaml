@@ -1,0 +1,7 @@
+framework:
+    cache:
+        app: cache.adapter.filesystem
+        pools:
+            cache.gutendex:
+                adapter: cache.app
+                default_lifetime: 3600

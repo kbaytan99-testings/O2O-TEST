@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+
+use App\Kernel;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Dotenv\Dotenv;
+
+require dirname(__DIR__).'/config/polyfills.php';
+require dirname(__DIR__).'/vendor/autoload.php';
+
+if (!class_exists(Application::class)) {
+    throw new LogicException('You need to add "symfony/framework-bundle" as a Composer dependency.');
+}
+
+if (!isset($_SERVER['APP_ENV'])) {
+    (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
+}
+
+$kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
+$application = new Application($kernel);
+$application->run();
