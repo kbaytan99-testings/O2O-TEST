@@ -2,3 +2,11 @@ controllers:
     resource: '../src/UI/Controller/'
     type: annotation
     prefix: /api
+
+app.swagger_ui:
+    path: /api/doc
+    controller: nelmio_api_doc.controller.swagger_ui
+
+app.swagger:
+    path: /api/doc.json
+    controller: nelmio_api_doc.controller.swagger
