@@ -1,14 +1,18 @@
-# Books API - Symfony with Hexagonal Architecture
+<div align="center">
+  <img src=".github/social-preview.png" alt="O2O-TEST" width="600">
+  
+  # Books API - Symfony with Hexagonal Architecture
 
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white)](/.github/workflows/ci.yml)
-[![PHP](https://img.shields.io/badge/PHP-8.0-777BB4?logo=php&logoColor=white)](https://www.php.net/)
-[![Symfony](https://img.shields.io/badge/Symfony-5.4-000000?logo=symfony&logoColor=white)](https://symfony.com/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
-[![License](https://img.shields.io/badge/License-Proprietary-red)](LICENSE)
-[![Architecture](https://img.shields.io/badge/Architecture-Hexagonal-green)](ARCHITECTURE.md)
-[![PSR-2](https://img.shields.io/badge/Code%20Style-PSR--2-blue)](phpcs.xml)
+  [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white)](/.github/workflows/ci.yml)
+  [![PHP](https://img.shields.io/badge/PHP-8.0-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+  [![Symfony](https://img.shields.io/badge/Symfony-5.4-000000?logo=symfony&logoColor=white)](https://symfony.com/)
+  [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
+  [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+  [![Architecture](https://img.shields.io/badge/Architecture-Hexagonal-green)](ARCHITECTURE.md)
+  [![PSR-2](https://img.shields.io/badge/Code%20Style-PSR--2-blue)](phpcs.xml)
 
-REST API for searching and querying books using the [Gutendex](https://gutendex.com/) API.
+  REST API for searching and querying books using the [Gutendex](https://gutendex.com/) API.
+</div>
 
 ## 📋 Description
 
