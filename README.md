@@ -1,5 +1,5 @@
 <div align="center">
-  <img src=".github/social-preview.png" alt="O2O-TEST" width="600">
+  <img src=".github/logo.png" alt="O2O-TEST Repository Logo" width="800">
   
   # Books API - Symfony with Hexagonal Architecture
 
