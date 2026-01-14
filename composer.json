@@ -38,7 +38,10 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/"
-        }
+        },
+        "files": [
+            "polyfill/array_is_list.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

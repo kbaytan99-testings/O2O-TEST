@@ -7,28 +7,32 @@ namespace App\Tests\Behat;
 use Behat\Behat\Context\Context;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
- * BookContext - Contexto de Behat para tests funcionales de la API
+ * BookContext - Behat context for API functional tests
  */
 class BookContext implements Context
 {
-    private KernelInterface $kernel;
     private ?Response $response = null;
-
-    public function __construct(KernelInterface $kernel)
-    {
-        $this->kernel = $kernel;
-    }
 
     /**
      * @When I send a GET request to :url
      */
     public function iSendAGetRequestTo(string $url): void
     {
+        // Load environment variables for test environment
+        if (file_exists(dirname(__DIR__, 2) . '/.env.test')) {
+            $dotenv = new \Symfony\Component\Dotenv\Dotenv();
+            $dotenv->load(dirname(__DIR__, 2) . '/.env.test');
+        }
+        
+        $kernel = new \App\Kernel('test', true);
+        $kernel->boot();
+        
         $request = Request::create($url, 'GET');
-        $this->response = $this->kernel->handle($request);
+        $this->response = $kernel->handle($request);
+        
+        $kernel->shutdown();
     }
 
     /**
