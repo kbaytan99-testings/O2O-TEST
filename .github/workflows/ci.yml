@@ -74,7 +74,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: false
+          load: true
           tags: books-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
