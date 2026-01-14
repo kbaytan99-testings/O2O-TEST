@@ -1,0 +1,9 @@
+vendor/
+var/
+.git/
+.github/
+.env.local
+.env.*.local
+composer.phar
+phpunit.xml
+.phpunit.result.cache

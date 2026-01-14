@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  books-api:
+    build: .
+    container_name: books-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - APP_ENV=dev
+      - GUTENDEX_API_URL=https://gutendex.com/books
+    restart: unless-stopped
