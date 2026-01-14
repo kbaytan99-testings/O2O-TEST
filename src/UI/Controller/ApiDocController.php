@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/api/doc", name="api_doc_")
+ * @Route("/doc", name="api_doc_")
  */
 class ApiDocController extends AbstractController
 {
