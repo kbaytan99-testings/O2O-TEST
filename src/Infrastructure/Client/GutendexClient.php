@@ -44,7 +44,7 @@ class GutendexClient
             return $cachedItem->get();
         }
 
-        $response = $this->httpClient->request('GET', $this->baseUrl, [
+        $response = $this->httpClient->request('GET', $this->baseUrl . '/books', [
             'query' => [
                 'search' => $searchQuery,
             ],
@@ -75,7 +75,7 @@ class GutendexClient
         }
 
         try {
-            $response = $this->httpClient->request('GET', $this->baseUrl . '/' . $id);
+            $response = $this->httpClient->request('GET', $this->baseUrl . '/books/' . $id);
             $data = $response->toArray();
 
             $cachedItem->set($data);
