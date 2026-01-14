@@ -84,8 +84,6 @@
         "docker:logs": "docker logs books-api",
         "docker:up": "docker-compose up -d",
         "docker:down": "docker-compose down",
-        "docker:restart": "docker-compose restart",
-        "docker:logs": "docker logs books-api",
         "cache:clear": "rm -rf var/cache/*",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
