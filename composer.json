@@ -75,6 +75,13 @@
             "@test",
             "@test:behat"
         ],
+        "docker:build": "docker build -t books-api:latest .",
+        "docker:run": "docker run -d -p 8000:8000 --name books-api books-api:latest",
+        "docker:stop": "docker stop books-api",
+        "docker:start": "docker start books-api",
+        "docker:restart": "docker restart books-api",
+        "docker:rm": "docker rm -f books-api",
+        "docker:logs": "docker logs books-api",
         "docker:up": "docker-compose up -d",
         "docker:down": "docker-compose down",
         "docker:restart": "docker-compose restart",
