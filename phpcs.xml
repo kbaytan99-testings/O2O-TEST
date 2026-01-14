@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="PSR-2">
+    <description>The PSR-2 coding standard.</description>
+    <arg name="tab-width" value="4"/>
+    <rule ref="PSR2"/>
+    <file>src/</file>
+    <file>tests/</file>
+</ruleset>
