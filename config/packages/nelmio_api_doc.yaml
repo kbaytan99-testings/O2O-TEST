@@ -1,0 +1,14 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Books API
+            description: REST API for searching and querying books using Gutendex
+            version: 1.0.0
+        servers:
+            - url: http://localhost:8000
+              description: Local development server
+            - url: http://localhost:8000
+              description: Docker container
+    areas:
+        path_patterns:
+            - ^/api(?!/doc$)
