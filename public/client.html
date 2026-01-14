@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books API - Book Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .search-section {
+            padding: 2rem;
+            background: #f8f9fa;
+        }
+        .book-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            height: 100%;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .author-badge {
+            font-size: 0.85rem;
+        }
+        .loading {
+            display: none;
+        }
+        .loading.active {
+            display: block;
+        }
+        .subject-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            margin: 0.25rem;
+            background: #e9ecef;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-card">
+            <!-- Header -->
+            <div class="header-section">
+                <h1 class="mb-2"><i class="bi bi-book"></i> Books API</h1>
+                <p class="mb-0">Search millions of books from Gutendex</p>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <form id="searchForm" class="row g-3">
+                    <div class="col-md-9">
+                        <input type="text" class="form-control form-control-lg" id="searchInput" 
+                               placeholder="Search by book title, author or subject... (e.g: shakespeare, python, love)" 
+                               required>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Quick Search Buttons -->
+                <div class="mt-3">
+                    <small class="text-muted">Quick Search:</small>
+                    <button class="btn btn-sm btn-outline-secondary m-1 quick-search" data-query="shakespeare">Shakespeare</button>
+                    <button class="btn btn-sm btn-outline-secondary m-1 quick-search" data-query="dickens">Dickens</button>
+                    <button class="btn btn-sm btn-outline-secondary m-1 quick-search" data-query="tolstoy">Tolstoy</button>
+                    <button class="btn btn-sm btn-outline-secondary m-1 quick-search" data-query="python">Python</button>
+                    <button class="btn btn-sm btn-outline-secondary m-1 quick-search" data-query="love">Love</button>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading text-center p-5" id="loading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Searching books...</p>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="p-4"></div>
+
+            <!-- Book Detail Modal -->
+            <div class="modal fade" id="bookModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="bookModalTitle"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body" id="bookModalBody">
+                            <!-- Book details will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-4">
+            <small class="text-white">
+                <i class="bi bi-code-square"></i> Powered by Gutendex API | 
+                <a href="/api/books?search=shakespeare" class="text-white" target="_blank">API Endpoint</a>
+            </small>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_BASE = window.location.origin + '/api/books';
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const resultsDiv = document.getElementById('results');
+        const loadingDiv = document.getElementById('loading');
+        const bookModal = new bootstrap.Modal(document.getElementById('bookModal'));
+
+        // Search form submit
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (query) {
+                await searchBooks(query);
+            }
+        });
+
+        // Quick search buttons
+        document.querySelectorAll('.quick-search').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const query = e.target.dataset.query;
+                searchInput.value = query;
+                await searchBooks(query);
+            });
+        });
+
+        // Search books
+        async function searchBooks(query) {
+            loadingDiv.classList.add('active');
+            resultsDiv.innerHTML = '';
+
+            try {
+                const response = await fetch(`${API_BASE}?search=${encodeURIComponent(query)}`);
+                if (!response.ok) throw new Error('API error');
+                
+                const books = await response.json();
+                displayResults(books, query);
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i> 
+                        An error occurred: ${error.message}
+                    </div>
+                `;
+            } finally {
+                loadingDiv.classList.remove('active');
+            }
+        }
+
+        // Display search results
+        function displayResults(books, query) {
+            if (books.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        No results found for "${query}".
+                    </div>
+                `;
+                return;
+            }
+
+            resultsDiv.innerHTML = `
+                <div class="mb-3">
+                    <h5><i class="bi bi-card-list"></i> Results (${books.length} books)</h5>
+                    <hr>
+                </div>
+                <div class="row g-3" id="booksList"></div>
+            `;
+
+            const booksList = document.getElementById('booksList');
+            books.forEach(book => {
+                const bookCard = createBookCard(book);
+                booksList.appendChild(bookCard);
+            });
+        }
+
+        // Create book card
+        function createBookCard(book) {
+            const col = document.createElement('div');
+            col.className = 'col-md-6 col-lg-4';
+            
+            const authors = book.authors.map(a => 
+                `${a.name}${a.birth_year ? ` (${a.birth_year}-${a.death_year || '?'})` : ''}`
+            ).join(', ');
+
+            col.innerHTML = `
+                <div class="card book-card h-100" onclick="showBookDetail(${book.id})">
+                    <div class="card-body">
+                        <h6 class="card-title text-primary">
+                            <i class="bi bi-book-fill"></i> ${book.title}
+                        </h6>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> ${authors || 'Unknown author'}
+                            </small>
+                        </p>
+                        ${book.subjects.length > 0 ? `
+                            <div class="mb-2">
+                                ${book.subjects.slice(0, 3).map(s => 
+                                    `<span class="subject-tag">${s}</span>`
+                                ).join('')}
+                                ${book.subjects.length > 3 ? 
+                                    `<span class="subject-tag">+${book.subjects.length - 3} more</span>` 
+                                    : ''}
+                            </div>
+                        ` : ''}
+                        <small class="text-muted">ID: ${book.id}</small>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <small class="text-primary">
+                            <i class="bi bi-eye"></i> View Details
+                        </small>
+                    </div>
+                </div>
+            `;
+
+            return col;
+        }
+
+        // Show book detail
+        async function showBookDetail(bookId) {
+            const modalTitle = document.getElementById('bookModalTitle');
+            const modalBody = document.getElementById('bookModalBody');
+
+            modalTitle.innerHTML = '<div class="spinner-border spinner-border-sm"></div> Loading...';
+            modalBody.innerHTML = '';
+            bookModal.show();
+
+            try {
+                const response = await fetch(`${API_BASE}/${bookId}`);
+                if (!response.ok) throw new Error('Book not found');
+                
+                const book = await response.json();
+                
+                modalTitle.innerHTML = `<i class="bi bi-book"></i> ${book.title}`;
+                
+                const authors = book.authors.map(a => 
+                    `<li><strong>${a.name}</strong>${a.birth_year ? 
+                        ` <span class="badge bg-secondary">${a.birth_year}-${a.death_year || '?'}</span>` 
+                        : ''}</li>`
+                ).join('');
+
+                modalBody.innerHTML = `
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <h6><i class="bi bi-people"></i> Authors:</h6>
+                            <ul>${authors || '<li>Unknown author</li>'}</ul>
+                        </div>
+                        
+                        ${book.subjects.length > 0 ? `
+                            <div class="col-12 mb-3">
+                                <h6><i class="bi bi-tags"></i> Subjects:</h6>
+                                <div>
+                                    ${book.subjects.map(s => 
+                                        `<span class="subject-tag">${s}</span>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="col-12">
+                            <hr>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle"></i> Gutendex ID: ${book.id}
+                            </small>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                modalTitle.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Hata';
+                modalBody.innerHTML = `
+                    <div class="alert alert-danger">
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Initial search on page load (optional)
+        // searchBooks('shakespeare');
+    </script>
+</body>
+</html>
