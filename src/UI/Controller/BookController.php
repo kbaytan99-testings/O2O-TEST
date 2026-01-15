@@ -37,7 +37,7 @@ class BookController extends AbstractController
      * Search books by query string
      *
      * @Route("", name="search", methods={"GET"})
-     * 
+     *
      * @OA\Get(
      *     path="/api/books",
      *     summary="Search books",
@@ -106,7 +106,7 @@ class BookController extends AbstractController
      * Get a book by its ID
      *
      * @Route("/{id}", name="show", methods={"GET"}, requirements={"id"="\d+"})
-     * 
+     *
      * @OA\Get(
      *     path="/api/books/{id}",
      *     summary="Get book by ID",

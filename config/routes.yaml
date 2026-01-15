@@ -2,7 +2,3 @@ controllers:
     resource: '../src/UI/Controller/'
     type: annotation
     prefix: /api
-
-app.swagger:
-    path: /api/doc.json
-    controller: nelmio_api_doc.controller.swagger_json

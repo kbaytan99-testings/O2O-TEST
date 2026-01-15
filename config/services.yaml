@@ -10,6 +10,9 @@ services:
             - '../src/Domain/ValueObject/'
             - '../src/Kernel.php'
 
+    # Alias for NelmioApiDocBundle
+    Nelmio\ApiDocBundle\ApiDocGenerator: '@nelmio_api_doc.generator.default'
+
     # Domain Layer - Repositories (Interfaces)
     App\Domain\Repository\BookRepositoryInterface:
         alias: App\Infrastructure\Repository\GutendexBookRepository
